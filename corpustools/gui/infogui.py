@@ -11,7 +11,7 @@ from corpustools.contextmanagers import (CanonicalVariantContext,
 
 class InformativityDialog(FunctionDialog):
 
-    header = ['Corpus', 'Segment', 'Informativity', 'Context']
+    header = ['Corpus', 'Segment', 'Informativity', 'Context', 'Type or token', 'Transcription tier', 'Pronunciation variants']
 
     _about = []
 
@@ -55,12 +55,12 @@ class InformativityDialog(FunctionDialog):
         optionsLayout.addWidget(self.tierSelect)
 
         self.precedingContext = RadioSelectWidget('Preceding context',
-                                                  OrderedDict([('All contexts', 'all')]))
+                                                  OrderedDict([('All preceding segments', 'all')]))
         optionsLayout.addWidget(self.precedingContext)
 
         self.typeTokenWidget = RadioSelectWidget('Type or token frequencies',
-                                                 OrderedDict([('Type', 'type')]))
-                                                              # ('Token', 'token')]))
+                                                 OrderedDict([('Token', 'token'),
+                                                              ('Type', 'type')]))
 
         actions = None
         self.variantsWidget = ContextWidget(self.corpus, actions)
@@ -70,6 +70,12 @@ class InformativityDialog(FunctionDialog):
         infoLayout.addWidget(optionsFrame)
 
         self.layout().insertWidget(0, infoFrame)
+
+        if showToolTips:
+            self.typeTokenWidget.setToolTip('<FONT COLOR=black>'
+                'To replicate the original informativity algorithm by Cohen Priva, choose token frequency.'
+                '</FONT>')
+
 
     def addOne(self):
         self.dialog = SingleSegmentDialog(self.inventory)
@@ -115,6 +121,7 @@ class InformativityDialog(FunctionDialog):
         self.kwargs['type_token'] = self.typeTokenWidget.value()
         self.kwargs['preceding_context'] = self.precedingContext.value()
         self.kwargs['rounding'] = self.settings['sigfigs']
+        self.kwargs['type_or_token'] = self.typeTokenWidget.value()
         return self.kwargs
 
 class InformativityWorker(FunctionWorker):
@@ -148,7 +155,7 @@ class InformativityWorker(FunctionWorker):
                 #     except AttributeError:
                 #         self.stopped = True #result is None if user cancelled
                 # else:
-                results = informativity.get_multiple_informativity(c, kwargs['segs'], sequence_type,
+                results = informativity.get_multiple_informativity(c, kwargs['segs'], sequence_type, type_or_token=kwargs['type_or_token'],
                             rounding=rounding, stop_check= kwargs['stop_check'], call_back=kwargs['call_back'])
                 try:
                     for result in results:
