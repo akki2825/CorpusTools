@@ -122,6 +122,7 @@ def load_corpus_csv(corpus_name, path, delimiter,
     if feature_system_path is not None and os.path.exists(feature_system_path):
         feature_matrix = load_binary(feature_system_path)
         feature_matrix = modernize.modernize_specifier(feature_matrix)
+        print(feature_system_path)
         corpus.set_feature_matrix(feature_matrix)
 
     if annotation_types is None:
@@ -146,7 +147,7 @@ def load_corpus_csv(corpus_name, path, delimiter,
         for a in headers:
             corpus.add_attribute(a.attribute)
 
-        trans_check = False
+        trans_check = True
 
         for line in f.readlines():
             if stop_check is not None and stop_check():
@@ -177,6 +178,7 @@ def load_corpus_csv(corpus_name, path, delimiter,
             corpus.add_word(word, allow_duplicates=True)
 
     if corpus.specifier is not None:
+        print(corpus.specifier)
         corpus.inventory.update_features(corpus.specifier)
 
     if corpus.has_transcription and not trans_check:
@@ -244,6 +246,7 @@ def load_feature_matrix_csv(name, path, delimiter, stop_check = None, call_back 
             text_input.append(newline)
 
     feature_matrix = FeatureMatrix(name,text_input)
+    print(name)
     feature_matrix.validate()
     return feature_matrix
 
