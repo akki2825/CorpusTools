@@ -5,7 +5,7 @@ from corpustools.symbolsim.edit_distance import edit_distance
 from corpustools.symbolsim.khorsi import khorsi
 from corpustools.symbolsim.phono_edit_distance import phono_edit_distance
 from corpustools.symbolsim.phono_align import Aligner
-from corpustools.multiprocessing import filter_mp, score_mp
+from corpustools.c_multiprocessing import filter_mp, score_mp
 
 
 def _is_edit_distance_neighbor(w, query, sequence_type, max_distance):
@@ -122,7 +122,7 @@ def neighborhood_density(corpus_context, query, tierdict,
     max_distance : float, optional
         Maximum edit distance from the queried word to consider a word a neighbor
     force_quadratic : bool
-        Force use of the less efficient quadratic algorithm even when finding edit 
+        Force use of the less efficient quadratic algorithm even when finding edit
         distance of 1 neighborhoods
     stop_check : callable, optional
         Optional function to check whether to gracefully terminate early
@@ -179,7 +179,7 @@ def neighborhood_density(corpus_context, query, tierdict,
 
 def fast_neighborhood_density(corpus_context, query, sequence_type, tier_type,
                               tierdict, file_type=None, trans_delimiter='.', collapse_homophones = False):
-    """Generates all neighbors of edit distance <= 1 and searches 
+    """Generates all neighbors of edit distance <= 1 and searches
     for them in corpus_context.
 
     Will be faster than neighborhood_density when:
